@@ -6,7 +6,7 @@ import filters
 
 NAME = 'Image Filter'
 DESR = 'Collection of image filters.'
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 FILTERS = {
     'rgb': 'Rgb',
     'rgba': 'Rgba',
