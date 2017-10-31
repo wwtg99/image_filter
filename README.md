@@ -60,7 +60,7 @@ python image_filter.py -f gaussian_blur -i images/test.jpg -o images/ -a radius=
 - sharp_center: sharp center
 - emboss_asym: Asymmetric emboss
 
-# Demo
+# Example
 
 Origin 原图
 
