@@ -35,10 +35,11 @@ def show_filters():
     [print(x) for x in FILTERS]
 
 
-def run(args):
+def parse_args(args):
     if not args.input or not os.path.exists(args.input):
         print('Invalid input')
-        return
+        return None
+    inp = args.input
     output = args.output
     if not output:
         output = './'
@@ -49,21 +50,37 @@ def run(args):
         p = dict([k.split('=') for k in args.param])
     else:
         p = {}
-    image = Image.open(args.input)
+    return {'input': inp, 'output': output, 'output_type': output_type, 'param': p, 'width': args.width,
+            'height': args.height}
+
+
+def run(args):
+    a = parse_args(args)
+    if a is None:
+        return
+    image = Image.open(a['input'])
     # filters
     if args.all_filters:
-        out = [call_filter(f, image, output, output_type, p) for f in FILTERS]
+        out = [call_filter(f, image, a) for f in FILTERS]
     else:
         fs = args.filter
         if not fs:
             fs = list(FILTERS.keys())[0:1]
-        out = [call_filter(f, image, output, output_type, p) for f in fs if f in FILTERS]
+        out = [call_filter(f, image, a) for f in fs if f in FILTERS]
 
 
-def call_filter(name, image, output, outtype='jpg', params={}):
+def call_filter(name, image, args):
     print('Filter image by %s' % name)
-    filter = getattr(filters, FILTERS[name])(image)
-    im2 = filter.filter(**params)
+    # filter
+    f = getattr(filters, FILTERS[name])(image)
+    params = args['param']
+    im2 = f.filter(**params)
+    output = args['output']
+    outtype = args['output_type']
+    # resize
+    if args['width'] or args['height']:
+        resize(im2, args['width'], args['height'])
+    # output
     if os.path.isdir(output):
         fout = output + name + '.' + outtype
         im2.save(fout)
@@ -73,6 +90,16 @@ def call_filter(name, image, output, outtype='jpg', params={}):
         im2.save(output)
         print('Output to %s' % output)
     return fout
+
+
+def resize(image, width, height):
+    print('Resize image')
+    if not width:
+        width = image.size[0]
+    if not height:
+        height = image.size[1]
+    image.thumbnail((width, height), Image.LANCZOS)
+    return image
 
 
 def main():
@@ -85,6 +112,8 @@ def main():
     arg.add_argument('-o', '--output', help='Output image path or directory (for multi filters).')
     arg.add_argument('-t', '--type', help='Output image type used for directory output')
     arg.add_argument('-a', '--param', help='Filter parameters', action='append')
+    arg.add_argument('--width', help='Image width (height can be calculated), can be used to create thumbnail', type=int)
+    arg.add_argument('--height', help='Image height (width can be calculated), can be used to create thumbnail', type=int)
     parser = arg.parse_args()
     if parser.list:
         show_filters()
