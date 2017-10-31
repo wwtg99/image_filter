@@ -1,6 +1,8 @@
 Image Filter
 ============
 
+An image operation and filter tool depends on Pillow, just for study and communication.
+
 # Dependency
 - Python3
 - Numpy
@@ -28,9 +30,25 @@ Some filters need parameters
 python image_filter.py -f gaussian_blur -i images/test.jpg -o images/ -a radius=3
 ```
 
+Resize image (thumbnail)
+```
+python image_filter.py -i images/test.jpg -o out.jpg -f rgb --width=300 --height=300
+```
+
+Add water mark image
+```
+python image_filter.py -i images/test.jpg -o images/img_mark.jpg -f rgb -m images/water_mark.png -p RT
+```
+
+Add water mark text
+```
+python image_filter.py -i images/test.jpg -o images/txt_mark.jpg -f rgb -x wwtg99 --font-size=40 --font-color=100,100,100,200
+```
+
 # Filters
 - rgb: RGB image
-- grey: Grayscale
+- rgba: RGBA image
+- grey: Gray scale
 - hand_drawn: Hand drawn
 - edge_curve: Find edges
 - blur: Blur
@@ -185,3 +203,15 @@ Sharp Center 中心锐化
 Emboss Asymmetric 非对称浮雕
 
 ![Emboss Asymmetric](https://github.com/wwtg99/image_filter/blob/master/images/emboss_asym.jpg)
+
+---
+
+Image water mark 图片水印
+
+![Image water mark](https://github.com/wwtg99/image_filter/blob/master/images/img_mark.jpg)
+
+---
+
+Text water mark 文字水印
+
+![Text water mark](https://github.com/wwtg99/image_filter/blob/master/images/txt_mark.jpg)

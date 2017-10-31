@@ -26,6 +26,14 @@ class Rgb(Filter):
         return self.image.convert('RGB')
 
 
+class Rgba(Filter):
+    """
+    RGBA 原图
+    """
+    def filter(self, **kwargs) -> Image:
+        return self.image.convert('RGBA')
+
+
 class Greyscale(Filter):
     """
     灰度
